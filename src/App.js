@@ -1,23 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+// import "./App.css";
+import { useState } from "react";
+import "./index.css";
+import Logo from "./Logo";
+import Form from "./Form";
+import PackingList from "./PackingList";
+import Stats from "./Stats";
 
 function App() {
+  const [items, setItems] = useState([]);
+
+  function handleAddItems(item) {
+    setItems((items) => [...items, item]);
+  }
+  function handleDeleteItems(id) {
+    console.log(id);
+    setItems((items) => items.filter((item) => item.id !== id));
+  }
+
+  function handleToggleItem(id) {
+    setItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, packed: !item.packed } : item
+      )
+    );
+  }
+
+  function handleClearData() {
+    const confirmed = window.confirm("Do you want to delete the all items? ");
+    if (confirmed) setItems([]);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Logo />
+      <Form onAddItems={handleAddItems} />
+      <PackingList
+        items={items}
+        onDeleteItem={handleDeleteItems}
+        onToggleItems={handleToggleItem}
+        onClearList={handleClearData}
+      />
+      <Stats items={items} />
     </div>
   );
 }
